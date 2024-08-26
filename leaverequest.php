@@ -13,12 +13,10 @@ if (isset($_GET['id'])) {
     $accept = "Accepted";
     mysqli_query($db, "UPDATE leavedetails SET LeaveStatus='$accept' WHERE Detail_Id=$acceptid");
 
-    // Fetch employee ID for notification
     $employee_query = mysqli_query($db, "SELECT EmpId FROM leavedetails WHERE Detail_Id='$acceptid'");
     $employee = mysqli_fetch_assoc($employee_query);
     $employee_id = $employee['EmpId'];
 
-    // Insert notification
     $notification_query = "INSERT INTO notifications (user_id, title, content, read_status) VALUES ('$employee_id', 'Leave Request Accepted', 'Your leave request has been accepted.', 'Unread')";
     mysqli_query($db, $notification_query);
 
@@ -28,12 +26,10 @@ if (isset($_GET['id'])) {
     $denied = "Denied";
     mysqli_query($db, "UPDATE leavedetails SET LeaveStatus='$denied' WHERE Detail_Id=$deniedid");
 
-    // Fetch employee ID for notification
     $employee_query = mysqli_query($db, "SELECT EmpId FROM leavedetails WHERE Detail_Id='$deniedid'");
     $employee = mysqli_fetch_assoc($employee_query);
     $employee_id = $employee['EmpId'];
 
-    // Insert notification
     $notification_query = "INSERT INTO notifications (user_id, title, content, read_status) VALUES ('$employee_id', 'Leave Request Denied', 'Your leave request has been denied.', 'Unread')";
     mysqli_query($db, $notification_query);
 

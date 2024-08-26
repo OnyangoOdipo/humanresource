@@ -52,17 +52,133 @@ $deductions = mysqli_query($db, "SELECT d.*, e.FirstName FROM deductions d JOIN 
 <head>
     <meta charset="UTF-8">
     <title>Manage Advanced Salary Requests</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Link to your stylesheet -->
+    
+    <link rel="stylesheet" href="styles.css"> 
+    <style>
+        
+        /* General Page Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #e9ecef;
+    color: #212529;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    color: #343a40;
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 30px;
+}
+
+h2 {
+    color: #495057;
+    font-size: 26px;
+    margin-top: 40px;
+    border-bottom: 2px solid #6c757d;
+    padding-bottom: 10px;
+}
+
+/* Table Styles */
+.table-style {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 18px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+.table-style th, .table-style td {
+    padding: 12px 15px;
+    border: 1px solid #dee2e6;
+    text-align: left;
+}
+
+.table-style th {
+    background-color: #007bff;
+    color: #ffffff;
+}
+
+.table-style tr {
+    transition: background-color 0.2s ease;
+}
+
+.table-style tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+.table-style tr:hover {
+    background-color: #e9ecef;
+}
+
+/* Button Styles */
+.btn-submit {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    text-align: center;
+    display: inline-block;
+}
+
+.btn-submit:hover {
+    background-color: #0056b3;
+}
+
+/* Form Styles */
+form {
+    display: inline;
+    margin: 0;
+}
+
+input[type="hidden"] {
+    display: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .table-style, .table-style th, .table-style td {
+        display: block;
+        width: 100%;
+    }
+
+    .table-style th, .table-style td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+    }
+
+    .table-style th::before, .table-style td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: bold;
+    }
+
+    .table-style th {
+        background-color: #495057;
+    }
+}
+
+
+    </style>
+    
 </head>
 <body>
-<div class="container">
     <h1>Manage Advanced Salary Requests</h1>
 
     <h2>Pending Requests</h2>
     <table class="table-style">
         <tr>
             <th>Employee ID</th>
-            <th>Employee Name</th>
             <th>Requested Amount</th>
             <th>Actions</th>
         </tr>
@@ -72,7 +188,6 @@ $deductions = mysqli_query($db, "SELECT d.*, e.FirstName FROM deductions d JOIN 
         ?>
         <tr>
             <td><?php echo $request['employee_id']; ?></td>
-            <td><?php echo $employee['EmpName']; ?></td>
             <td><?php echo $request['request_amount']; ?></td>
             <td>
                 <form method="post" style="display:inline;">
@@ -103,7 +218,6 @@ $deductions = mysqli_query($db, "SELECT d.*, e.FirstName FROM deductions d JOIN 
         </tr>
         <?php } ?>
     </table>
-</div>
-<?php include('footer.php'); ?>
+
 </body>
 </html>
