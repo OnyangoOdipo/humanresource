@@ -79,7 +79,7 @@ CREATE TABLE `dailyworkload` (
 --
 
 CREATE TABLE `employee` (
-  `EmpId` bigint(20) NOT NULL,
+  `EmpId` bigint(20) NOT NULL AUTO_INCREMENT,
   `EmployeeId` varchar(11) NOT NULL,
   `FirstName` varchar(200) NOT NULL,
   `MiddleName` varchar(200) NOT NULL,

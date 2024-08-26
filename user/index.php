@@ -1,4 +1,40 @@
 <?php
+session_start();
+include_once('../controller/connect.php');
+
+if (isset($_POST['clientlogin'])) {
+    $username = $_POST['name'];
+    $password = $_POST['password'];
+    
+    // Connect to the database
+    $dbs = new database();
+    $db = $dbs->connection();
+    
+    // Prepare and execute the query
+    $query = "SELECT * FROM employee WHERE Email = ? AND Password = ?";
+    $stmt = $db->prepare($query);
+    $stmt->bind_param("ss", $username, $password);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($result->num_rows > 0) {
+        // Fetch user data
+        $user = $result->fetch_assoc();
+        
+        // Set session variables
+        $_SESSION['User']['EmployeeId'] = $user['EmpId'];
+        $_SESSION['User']['Email'] = $user['Email'];
+        
+        // Redirect to dashboard
+        header("Location: ../user/dashboard.php");
+        exit();
+    } else {
+        // Redirect with error message
+        header("Location: ../user/login.php?msg=Invalid email or password.");
+        exit();
+    }
+}
+
     $result ="";
     if(isset($_GET['msg'])) 
     {
@@ -125,6 +161,9 @@ body {
     <input type="password" name="password" value="" placeholder="Password" id="password" />
     <h4 style="color: #FF0000; font-weight: normal;"><?php echo $result; ?></h3>
     <button type="submit" name="clientlogin">Submit</button>
+    <div class="clearfix"></div>
+    <h5 class="text-center"><a href="../index.php" style="text-align: center;" >Login as an Admin</a></h5>
+    <div class="clearfix"></div>
     </form>
 </div>
 </body>

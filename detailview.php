@@ -6,11 +6,7 @@
 	$db=$dbs->connection();
 	$row = "";
 	$gendern ="";
-	$maritaln ="";
-	$cityn ="";
-	$staten ="";
-	$countryn ="";
-	$positionn = "";
+	$employeen = "";
 	$rolen ="";
 	if(isset($_GET['employeeid']))
 	{
@@ -23,25 +19,9 @@
 		$gid = mysqli_query($db,"select * from gender where GenderId='$genderid'");
 		$gendern = mysqli_fetch_assoc($gid);
 
-		$maritalid = $row['MaritalStatus'];
-		$mid = mysqli_query($db,"select * from maritalstatus where MaritalId='$maritalid'");
-		$maritaln = mysqli_fetch_assoc($mid);
-
-		$cityid = $row['CityId'];
-		$cid = mysqli_query($db,"select * from city where CityId='$cityid'");
-		$cityn = mysqli_fetch_assoc($cid);
-
-		$stateid = $cityn['StateId'];
-		$sid = mysqli_query($db,"select * from state where StateId='$stateid'");
-		$staten = mysqli_fetch_assoc($sid);
-
-		$countryid = $staten['CountryId'];
-		$couid = mysqli_query($db,"select * from country where CountryId='$countryid'");
-		$countryn = mysqli_fetch_assoc($couid);
-
-		$positionid = $row['PositionId'];
-		$pid = mysqli_query($db,"select * from position where PositinId='$positionid'");
-		$positionn = mysqli_fetch_assoc($pid);
+		$tierid = $row['TierId'];
+		$tid = mysqli_query($db,"select * from employee_tiers where TierId='$tierid'");
+		$employeen = mysqli_fetch_assoc($tid);
 
 		$roleid = $row['RoleId'];
 		$rid= mysqli_query($db,"select * from role where RoleId='$roleid'");
@@ -106,21 +86,7 @@
 						<td rowspan="2"><img src="image/<?php if($row) { echo $row['ImageName']; } else{ echo "Null"; }?>" style=" height: 61px; border: double;"></td>
 					</tr>
 				</tbody>
-				<tbody>
-					<tr>
-						<td style="text-align: right;"><b>Address</b> &nbsp;::</td>
-						<td><?php if($row) { echo $row['Address1']; } else{ echo "Null"; }?>,</td>
-					</tr>
-					<tr>
-						<td></td>
-						<td><?php if($row) { echo $row['Address2']; } else{ echo "Null"; }?>,&nbsp;&nbsp;<?php if($row) { echo $row['Address3']; } else{ echo "Null"; }?></td>
-						
-					</tr>
-					<tr>
-						<td></td>
-						<td><?php if($cityn) { echo ucfirst($cityn['Name']); } else{ echo "Null"; }?> ,&nbsp;&nbsp;&nbsp;<?php if($staten) { echo ucfirst($staten['Name']); } else{ echo "Null"; }?> ,&nbsp;&nbsp;&nbsp;<?php if($countryn) { echo ucfirst($countryn['Name']); } else{ echo "Null"; }?></td>
-					</tr>
-				</tbody>
+				
 			</table>
 		</div>
 		<div class="col-md-4">
@@ -130,13 +96,7 @@
 						<td style="text-align: right;"><b>Gender</b> ::</td>
 						<td><?php if($gendern) { echo ucfirst($gendern['Name']); } else{ echo "Null"; }?></td>
 					</tr>
-				</tbody>
-				<tbody>
-					<tr>
-						<td style="text-align: right;"><b>Marital</b> ::</td>
-						<td><?php if($maritaln) { echo $maritaln['Name']; } else{ echo "Null"; }?></td>
-					</tr>
-				</tbody>
+				</tbody>			
 				<tbody>
 					<tr>
 						<td style="text-align: right;"><b>Birth Date</b> ::</td>
@@ -168,20 +128,14 @@
 				</tbody>
 				<tbody>
 					<tr>
-						<td style="text-align: right;"><b>Position</b> ::</td>
-						<td><?php if($positionn) { echo $positionn['Name']; } else{ echo "Null"; }?></td>
+						<td style="text-align: right;"><b>Employee Tier</b> ::</td>
+						<td><?php if($employeen) { echo $employeen['tier_name']; } else{ echo "Null"; }?></td>
 					</tr>
 				</tbody>
 				<tbody>
 					<tr>
 						<td style="text-align: right;"><b>Join Date</b> ::</td>
 						<td><?php if($row) { echo $row['JoinDate']; } else{ echo "Null"; }?></td>
-					</tr>
-				</tbody>
-				<tbody>
-					<tr>
-						<td style="text-align: right;"><b>MAC Address</b> ::</td>
-						<td><?php if($row) { echo $row['MacAddress']; } else{ echo "Null"; }?></td>
 					</tr>
 				</tbody>
 			</table>

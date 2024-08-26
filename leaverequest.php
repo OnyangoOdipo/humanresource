@@ -1,29 +1,48 @@
-<?php include('header.php');?>
+<?php include('header.php'); ?>
 <?php
-  include_once('controller/connect.php');
-  
-  $dbs = new database();
-  $db=$dbs->connection();
-  $Statusl = "Pending";
-  $leavedetails = mysqli_query($db,"select * from leavedetails where LeaveStatus='$Statusl'");
-  if(isset($_GET['id']))
-  {
+include_once('controller/connect.php');
+
+$dbs = new database();
+$db = $dbs->connection();
+
+$Statusl = "Pending";
+$leavedetails = mysqli_query($db, "SELECT * FROM leavedetails WHERE LeaveStatus='$Statusl'");
+
+if (isset($_GET['id'])) {
     $acceptid = $_GET['id'];
-    $accept = "Accept";
-    mysqli_query($db,"update leavedetails set LeaveStatus='$accept' where Detail_Id='$acceptid'");
+    $accept = "Accepted";
+    mysqli_query($db, "UPDATE leavedetails SET LeaveStatus='$accept' WHERE Detail_Id=$acceptid");
+
+    // Fetch employee ID for notification
+    $employee_query = mysqli_query($db, "SELECT EmpId FROM leavedetails WHERE Detail_Id='$acceptid'");
+    $employee = mysqli_fetch_assoc($employee_query);
+    $employee_id = $employee['EmpId'];
+
+    // Insert notification
+    $notification_query = "INSERT INTO notifications (user_id, title, content, read_status) VALUES ('$employee_id', 'Leave Request Accepted', 'Your leave request has been accepted.', 'Unread')";
+    mysqli_query($db, $notification_query);
+
     echo "<script>window.location='leaverequest.php';</script>";
-  }
-  else if(isset($_GET['msg']))
-  {
+} else if (isset($_GET['msg'])) {
     $deniedid = $_GET['msg'];
     $denied = "Denied";
-    mysqli_query($db,"update leavedetails set LeaveStatus='$denied' where Detail_Id='$deniedid'");
-    echo "<script>window.location='leaverequest.php';</script>";
-  }
+    mysqli_query($db, "UPDATE leavedetails SET LeaveStatus='$denied' WHERE Detail_Id=$deniedid");
 
-  $laccept = mysqli_query($db,"SELECT l.*,e.FirstName,e.LastName,lt.Type_of_Name FROM leavedetails l JOIN employee e ON l.EmpId=e.EmployeeId JOIN type_of_leave lt on l.TypesLeaveId=lt.LeaveId WHERE LeaveStatus='Accept'");
-  $ldenied = mysqli_query($db,"SELECT l.*,e.FirstName,e.LastName,lt.Type_of_Name FROM leavedetails l JOIN employee e ON l.EmpId=e.EmployeeId JOIN type_of_leave lt on l.TypesLeaveId=lt.LeaveId WHERE LeaveStatus='Denied'");
-  
+    // Fetch employee ID for notification
+    $employee_query = mysqli_query($db, "SELECT EmpId FROM leavedetails WHERE Detail_Id='$deniedid'");
+    $employee = mysqli_fetch_assoc($employee_query);
+    $employee_id = $employee['EmpId'];
+
+    // Insert notification
+    $notification_query = "INSERT INTO notifications (user_id, title, content, read_status) VALUES ('$employee_id', 'Leave Request Denied', 'Your leave request has been denied.', 'Unread')";
+    mysqli_query($db, $notification_query);
+
+    echo "<script>window.location='leaverequest.php';</script>";
+}
+
+$laccept = mysqli_query($db, "SELECT l.*, e.FirstName, e.LastName, lt.Type_of_Name FROM leavedetails l JOIN employee e ON l.EmpId=e.EmployeeId JOIN type_of_leave lt ON l.TypesLeaveId=lt.LeaveId WHERE LeaveStatus='Accepted'");
+$ldenied = mysqli_query($db, "SELECT l.*, e.FirstName, e.LastName, lt.Type_of_Name FROM leavedetails l JOIN employee e ON l.EmpId=e.EmployeeId JOIN type_of_leave lt ON l.TypesLeaveId=lt.LeaveId WHERE LeaveStatus='Denied'");
+
 ?>
 <ol class="breadcrumb" style="margin: 10px 0px ! important;">
     <li class="breadcrumb-item"><a href="Home.php">Home</a><i class="fa fa-angle-right"></i>Leave<i class="fa fa-angle-right"></i>Leave</li>

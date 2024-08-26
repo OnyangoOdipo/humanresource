@@ -185,16 +185,25 @@ nav{
                <aside class="s-12 l-2">
                   <div class="aside-nav">
                      <ul>
-                        <li><a href="home.php" title="Home">Home</a></li>
-                        <li><a href="profile.php" title="Profile">Profile</a></li>
-                        <li>
-                           <a title="Leave">Leave</a>
-                           <ul>
-                              <li><a href="applyleave.php">Apply</a></li>
-                              <li><a href="leavestatus.php">Applications</a></li>
-                           </ul>
-                        </li>
-                        <li><a href="changepassword.php" title="Change Password">Password</a></li>
+                           <li><a href="home.php" title="Home">Home</a></li>
+                           <li><a href="profile.php" title="Profile">Profile</a></li>
+                           <li>
+                              <a title="Leave">Leave</a>
+                              <ul>
+                                 <li><a href="applyleave.php">Apply</a></li>
+                                 <li><a href="leavestatus.php">Applications</a></li>
+                              </ul>
+                           </li>
+                           <li>
+                              <a title="Pay Slips">Pay Slips</a>
+                              <ul>
+                                 <li><a href="payslip.php">Download</a></li>
+                                 <li><a href="applyadvance.php">Apply Advance</a></li>
+                              </ul>
+                           </li>
+                           <li><a href="announcements.php" title="Announcements">Announcements</a></li>
+                           <li><a href="notifications.php" title="Notifications">Notifications</a></li>
+                           <li><a href="changepassword.php" title="Change Password">Password</a></li>
                      </ul>
                   </div>
                </aside>
