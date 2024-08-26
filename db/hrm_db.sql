@@ -1,15 +1,21 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.3
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 10, 2022 at 05:45 AM
--- Server version: 10.4.24-MariaDB
--- PHP Version: 8.1.5
+-- Generation Time: Aug 26, 2024 at 10:52 AM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Database: `hrm_db`
@@ -18,45 +24,39 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `city`
+-- Table structure for table `advanced_salary_requests`
 --
 
-CREATE TABLE `city` (
-  `CityId` int(11) NOT NULL,
-  `StateId` int(11) NOT NULL,
-  `Name` varchar(200) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `city`
---
-
-INSERT INTO `city` (`CityId`, `StateId`, `Name`) VALUES
-(1, 1, 'Sample 101'),
-(2, 1, 'Sample 102'),
-(21, 1, 'Manila'),
-(22, 1, 'Muntinlupa'),
-(23, 4, 'Los Angeles'),
-(24, 3, 'Washington');
+CREATE TABLE `advanced_salary_requests` (
+  `id` int(11) NOT NULL,
+  `employee_id` bigint(20) DEFAULT NULL,
+  `request_amount` decimal(10,2) NOT NULL,
+  `status` enum('Pending','Approved','Denied') DEFAULT 'Pending',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `country`
+-- Table structure for table `announcements`
 --
 
-CREATE TABLE `country` (
-  `CountryId` int(11) NOT NULL,
-  `Name` varchar(200) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+CREATE TABLE `announcements` (
+  `id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `content` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `country`
+-- Dumping data for table `announcements`
 --
 
-INSERT INTO `country` (`CountryId`, `Name`) VALUES
-(1, 'Philippines'),
-(9, 'USA');
+INSERT INTO `announcements` (`id`, `title`, `content`, `created_at`) VALUES
+(1, 'New', 'Welcome new members', '2024-08-25 20:31:24'),
+(2, 'New', 'Welcome new members', '2024-08-25 20:32:02'),
+(3, 'New', 'Welcome new members', '2024-08-25 20:32:46'),
+(4, 'New', 'Welcome new members', '2024-08-25 20:34:41');
 
 -- --------------------------------------------------------
 
@@ -70,7 +70,29 @@ CREATE TABLE `dailyworkload` (
   `LoginDate` datetime DEFAULT NULL,
   `LogoutDate` datetime DEFAULT NULL,
   `DailyWorkingminutes` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `dailyworkload`
+--
+
+INSERT INTO `dailyworkload` (`DailyWorkLoadId`, `EmpId`, `LoginDate`, `LogoutDate`, `DailyWorkingminutes`) VALUES
+(1, '6231415', '2024-08-25 23:45:09', NULL, NULL),
+(2, '6231415', '2024-08-26 03:31:47', '2024-08-26 11:52:03', 500);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `deductions`
+--
+
+CREATE TABLE `deductions` (
+  `id` int(11) NOT NULL,
+  `employee_id` bigint(20) DEFAULT NULL,
+  `deduction_amount` decimal(10,2) NOT NULL,
+  `reason` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -79,23 +101,16 @@ CREATE TABLE `dailyworkload` (
 --
 
 CREATE TABLE `employee` (
-  `EmpId` bigint(20) NOT NULL AUTO_INCREMENT,
+  `EmpId` bigint(20) NOT NULL,
   `EmployeeId` varchar(11) NOT NULL,
   `FirstName` varchar(200) NOT NULL,
   `MiddleName` varchar(200) NOT NULL,
   `LastName` varchar(200) NOT NULL,
   `Birthdate` date NOT NULL,
   `Gender` int(10) NOT NULL,
-  `Address1` varchar(500) NOT NULL,
-  `Address2` varchar(500) NOT NULL,
-  `Address3` varchar(500) NOT NULL,
-  `CityId` int(11) NOT NULL,
   `Mobile` decimal(10,0) NOT NULL,
   `Email` varchar(200) NOT NULL,
   `Password` varchar(25) NOT NULL,
-  `AadharNumber` varchar(25) NOT NULL,
-  `MaritalStatus` int(11) NOT NULL,
-  `PositionId` int(11) NOT NULL,
   `CreatedBy` bigint(20) NOT NULL,
   `CreatedDate` datetime NOT NULL,
   `ModifiedBy` bigint(20) DEFAULT NULL,
@@ -107,16 +122,41 @@ CREATE TABLE `employee` (
   `StatusId` int(11) NOT NULL,
   `RoleId` int(11) NOT NULL,
   `ImageName` varchar(1000) DEFAULT NULL,
-  `MacAddress` varchar(25) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `TierId` int(11) DEFAULT NULL,
+  `BasicSalary` decimal(10,2) DEFAULT NULL,
+  `CurrentSalary` decimal(10,2) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `employee`
 --
 
-INSERT INTO `employee` (`EmpId`, `EmployeeId`, `FirstName`, `MiddleName`, `LastName`, `Birthdate`, `Gender`, `Address1`, `Address2`, `Address3`, `CityId`, `Mobile`, `Email`, `Password`, `AadharNumber`, `MaritalStatus`, `PositionId`, `CreatedBy`, `CreatedDate`, `ModifiedBy`, `ModifiedDate`, `JoinDate`, `LeaveDate`, `LastLogin`, `LastLogout`, `StatusId`, `RoleId`, `ImageName`, `MacAddress`) VALUES
-(1, '1', 'admin', 'admin', 'admin', '1994-10-09', 1, 'address1', 'address2', 'address3', 1, '9999999999', 'admin@gmail.com', 'admin#123', '12354658496', 2, 1, 1, '2017-01-01 00:00:00', 1, '2017-01-31 10:33:33', '2017-01-11', '2017-01-18', '2022-10-10 09:10:42', '2017-02-09 15:12:09', 1, 1, 'images (2).jpg', ''),
-(2, '6231415', 'Mark', 'D', 'Cooper', '2022-10-10', 1, 'Sample Address 101', 'Sample Address 102', '', 22, '912345678', 'mcooper@mail.com', 'mcooper#123', '', 1, 2, 1, '2022-10-10 08:01:43', 1, '2022-10-10 08:05:39', '2022-10-10', '0000-00-00', '2022-10-10 08:55:27', '2022-10-10 08:55:05', 1, 3, '33615user.png', '');
+INSERT INTO `employee` (`EmpId`, `EmployeeId`, `FirstName`, `MiddleName`, `LastName`, `Birthdate`, `Gender`, `Mobile`, `Email`, `Password`, `CreatedBy`, `CreatedDate`, `ModifiedBy`, `ModifiedDate`, `JoinDate`, `LeaveDate`, `LastLogin`, `LastLogout`, `StatusId`, `RoleId`, `ImageName`, `TierId`, `BasicSalary`, `CurrentSalary`) VALUES
+(1, '1', 'admin', 'admin', 'admin', '1994-10-09', 1, 9999999999, 'admin@gmail.com', 'admin#123', 1, '2017-01-01 00:00:00', 1, '2017-01-31 10:33:33', '2017-01-11', '2017-01-18', '2024-08-26 01:27:34', '2017-02-09 15:12:09', 1, 1, 'images (2).jpg', NULL, NULL, NULL),
+(2, '6231415', 'Mark', 'D', 'Cooper', '2022-10-10', 1, 912345678, 'mcooper@mail.com', 'mcooper#123', 1, '2022-10-10 08:01:43', 1, '2022-10-10 08:05:39', '2022-10-10', '0000-00-00', '2024-08-26 11:26:49', '2024-08-26 11:52:03', 1, 2, '33615user.png', NULL, NULL, NULL),
+(3, '1234', 'Shadrack', 'Onyango', 'Odipo', '2001-09-04', 1, 757963318, 'odpsha@gmail.com', '1234Five!', 1, '2024-08-26 08:37:45', 1, '2024-08-26 08:50:59', '2024-08-17', '0000-00-00', NULL, NULL, 1, 2, '299008F4FOREX.png', 0, NULL, NULL),
+(4, '', 'Shadrack', 'Onyango', 'Odipo', '2024-07-30', 1, 757963318, 'shadrackonyango30@gmail.com', '1234Five!', 1, '2024-08-26 09:28:06', NULL, NULL, '2024-08-26', NULL, NULL, NULL, 1, 1, '202894WhatsApp Image 2024-08-13 at 6.51.15 AM (2).jpeg', NULL, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `employee_tiers`
+--
+
+CREATE TABLE `employee_tiers` (
+  `TierId` int(11) NOT NULL,
+  `tier_name` varchar(255) NOT NULL,
+  `basic_salary` decimal(10,2) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `employee_tiers`
+--
+
+INSERT INTO `employee_tiers` (`TierId`, `tier_name`, `basic_salary`, `created_at`, `updated_at`) VALUES
+(1, 'Managers', 160000.00, '2024-08-25 21:36:18', '2024-08-25 21:36:18');
 
 -- --------------------------------------------------------
 
@@ -127,7 +167,7 @@ INSERT INTO `employee` (`EmpId`, `EmployeeId`, `FirstName`, `MiddleName`, `LastN
 CREATE TABLE `gender` (
   `GenderId` int(11) NOT NULL,
   `Name` varchar(15) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `gender`
@@ -146,7 +186,7 @@ INSERT INTO `gender` (`GenderId`, `Name`) VALUES
 CREATE TABLE `leavedays` (
   `LeaveDayId` bigint(20) NOT NULL,
   `LeaveDay` int(3) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `leavedays`
@@ -169,7 +209,7 @@ CREATE TABLE `leavedetails` (
   `StateDate` date NOT NULL,
   `EndDate` date NOT NULL,
   `LeaveStatus` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `leavedetails`
@@ -181,41 +221,17 @@ INSERT INTO `leavedetails` (`Detail_Id`, `EmpId`, `TypesLeaveId`, `Reason`, `Sta
 -- --------------------------------------------------------
 
 --
--- Table structure for table `maritalstatus`
+-- Table structure for table `notifications`
 --
 
-CREATE TABLE `maritalstatus` (
-  `MaritalId` int(11) NOT NULL,
-  `Name` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `maritalstatus`
---
-
-INSERT INTO `maritalstatus` (`MaritalId`, `Name`) VALUES
-(1, 'Married'),
-(2, 'Unmarried');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `position`
---
-
-CREATE TABLE `position` (
-  `PositinId` int(11) NOT NULL,
-  `Name` varchar(200) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `position`
---
-
-INSERT INTO `position` (`PositinId`, `Name`) VALUES
-(1, 'HR'),
-(2, 'Web Developer'),
-(3, 'Fullstack PHP Developer');
+CREATE TABLE `notifications` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `content` text NOT NULL,
+  `read_status` tinyint(1) DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -226,7 +242,7 @@ INSERT INTO `position` (`PositinId`, `Name`) VALUES
 CREATE TABLE `role` (
   `RoleId` int(11) NOT NULL,
   `Name` varchar(200) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `role`
@@ -234,30 +250,7 @@ CREATE TABLE `role` (
 
 INSERT INTO `role` (`RoleId`, `Name`) VALUES
 (1, 'admin'),
-(2, 'admin-hr'),
-(3, 'employee');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `state`
---
-
-CREATE TABLE `state` (
-  `StateId` int(11) NOT NULL,
-  `CountryId` int(11) NOT NULL,
-  `Name` varchar(200) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `state`
---
-
-INSERT INTO `state` (`StateId`, `CountryId`, `Name`) VALUES
-(1, 1, 'Metro Manila'),
-(2, 1, 'Negros Oriental'),
-(3, 9, 'DC'),
-(4, 9, 'California');
+(2, 'employee');
 
 -- --------------------------------------------------------
 
@@ -268,7 +261,7 @@ INSERT INTO `state` (`StateId`, `CountryId`, `Name`) VALUES
 CREATE TABLE `status` (
   `StatusId` int(11) NOT NULL,
   `Name` varchar(200) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `status`
@@ -287,7 +280,7 @@ INSERT INTO `status` (`StatusId`, `Name`) VALUES
 CREATE TABLE `type_of_leave` (
   `LeaveId` bigint(20) NOT NULL,
   `Type_of_Name` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `type_of_leave`
@@ -304,16 +297,17 @@ INSERT INTO `type_of_leave` (`LeaveId`, `Type_of_Name`) VALUES
 --
 
 --
--- Indexes for table `city`
+-- Indexes for table `advanced_salary_requests`
 --
-ALTER TABLE `city`
-  ADD PRIMARY KEY (`CityId`);
+ALTER TABLE `advanced_salary_requests`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `employee_id` (`employee_id`);
 
 --
--- Indexes for table `country`
+-- Indexes for table `announcements`
 --
-ALTER TABLE `country`
-  ADD PRIMARY KEY (`CountryId`);
+ALTER TABLE `announcements`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `dailyworkload`
@@ -322,12 +316,26 @@ ALTER TABLE `dailyworkload`
   ADD PRIMARY KEY (`DailyWorkLoadId`);
 
 --
+-- Indexes for table `deductions`
+--
+ALTER TABLE `deductions`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `employee_id` (`employee_id`);
+
+--
 -- Indexes for table `employee`
 --
 ALTER TABLE `employee`
   ADD PRIMARY KEY (`EmpId`),
   ADD UNIQUE KEY `Email` (`Email`),
-  ADD UNIQUE KEY `EmployeeId` (`EmployeeId`);
+  ADD UNIQUE KEY `EmployeeId` (`EmployeeId`),
+  ADD KEY `TierId` (`TierId`);
+
+--
+-- Indexes for table `employee_tiers`
+--
+ALTER TABLE `employee_tiers`
+  ADD PRIMARY KEY (`TierId`);
 
 --
 -- Indexes for table `gender`
@@ -348,28 +356,16 @@ ALTER TABLE `leavedetails`
   ADD PRIMARY KEY (`Detail_Id`);
 
 --
--- Indexes for table `maritalstatus`
+-- Indexes for table `notifications`
 --
-ALTER TABLE `maritalstatus`
-  ADD PRIMARY KEY (`MaritalId`);
-
---
--- Indexes for table `position`
---
-ALTER TABLE `position`
-  ADD PRIMARY KEY (`PositinId`);
+ALTER TABLE `notifications`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `role`
 --
 ALTER TABLE `role`
   ADD PRIMARY KEY (`RoleId`);
-
---
--- Indexes for table `state`
---
-ALTER TABLE `state`
-  ADD PRIMARY KEY (`StateId`);
 
 --
 -- Indexes for table `status`
@@ -388,62 +384,42 @@ ALTER TABLE `type_of_leave`
 --
 
 --
--- AUTO_INCREMENT for table `city`
+-- AUTO_INCREMENT for table `advanced_salary_requests`
 --
-ALTER TABLE `city`
-  MODIFY `CityId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+ALTER TABLE `advanced_salary_requests`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `country`
+-- AUTO_INCREMENT for table `announcements`
 --
-ALTER TABLE `country`
-  MODIFY `CountryId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+ALTER TABLE `announcements`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `dailyworkload`
 --
 ALTER TABLE `dailyworkload`
-  MODIFY `DailyWorkLoadId` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `DailyWorkLoadId` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `deductions`
+--
+ALTER TABLE `deductions`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `employee`
 --
 ALTER TABLE `employee`
-  MODIFY `EmpId` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `EmpId` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT for table `gender`
+-- AUTO_INCREMENT for table `employee_tiers`
 --
-ALTER TABLE `gender`
-  MODIFY `GenderId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
--- AUTO_INCREMENT for table `leavedays`
---
-ALTER TABLE `leavedays`
-  MODIFY `LeaveDayId` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT for table `leavedetails`
---
-ALTER TABLE `leavedetails`
-  MODIFY `Detail_Id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT for table `position`
---
-ALTER TABLE `position`
-  MODIFY `PositinId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT for table `state`
---
-ALTER TABLE `state`
-  MODIFY `StateId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT for table `type_of_leave`
---
-ALTER TABLE `type_of_leave`
-  MODIFY `LeaveId` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+ALTER TABLE `employee_tiers`
+  MODIFY `TierId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
